@@ -52,7 +52,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
-
 public class MainActivity extends AppCompatActivity {
 
     //resources for populating list view
@@ -63,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
     Calendar c = Calendar.getInstance();
 
     //resources for tracking date of added items
-    Date today = new Date();
     int dayX = this.c.get(Calendar.DAY_OF_MONTH);
     int monthX = (this.c.get(Calendar.MONTH) + 1);
     int yearX = this.c.get(Calendar.YEAR);
@@ -102,24 +100,34 @@ public class MainActivity extends AppCompatActivity {
             "It does not matter how slowly you go as long as you do not stop." + "\n" + "\n" + "Confucius"
     };
 
+    LayoutInflater inflater;
+
+    boolean dateChange = false;
+
+    TaskItem currentTask;
+
     //listener for Date Selection, stores the date selected by used and calls addItem
     private DatePickerDialog.OnDateSetListener myDatePickerListener = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             MainActivity.this.yearX = year;
             MainActivity.this.monthX = month + 1;
             MainActivity.this.dayX = dayOfMonth;
-            Toast.makeText(MainActivity.this, tempTaskName + " added", Toast.LENGTH_SHORT).show();
             view.updateDate(MainActivity.this.c.get(Calendar.YEAR), MainActivity.this.c.get(Calendar.MONTH), MainActivity.this.c.get(Calendar.DAY_OF_MONTH));
-            MainActivity.this.onAddItem();
+            if (!dateChange)
+                MainActivity.this.onAddItem();
+            else
+                changeDate();
+            dateChange = false;
         }
     };
-
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        inflater = this.getLayoutInflater();
 
         //SQLite setup
         this.mHelper = new TaskDbHelper(this);
@@ -176,32 +184,93 @@ public class MainActivity extends AppCompatActivity {
         this.lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> adapterView, View item, int pos, long id) {
 
-                //get database
-                SQLiteDatabase db = MainActivity.this.mHelper.getWritableDatabase();
-                //remove item from database
-                db.delete(TaskContract.TaskEntry.TABLE, "title = ?", new String[]{((TaskItem) MainActivity.this.items.get(pos)).taskName});
-                db.close();
-                //remove item from list adapter
-                MainActivity.this.items.remove(pos);
 
-                //remove item from calendar
-                events.clear();
-                for (TaskItem task : items) {
-                    events.add(task.getDate());
-                }
-                cv.setEvents(events);
-
-                MainActivity.this.itemsAdapter.notifyDataSetChanged();
                 return true;
+            }
+        });
+
+        this.lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                //creating dialog
+                final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                final View dialogView = inflater.inflate(R.layout.edit_task, null);
+                dialogBuilder.setView(dialogView);
+
+                //create button to listen for click
+                Button save = dialogView.findViewById(R.id.save);
+                final Button changeDate = dialogView.findViewById(R.id.editDate);
+
+                //create EditText to modify hint, get user input
+                final EditText mEdit = dialogView.findViewById(R.id.editEntry);
+                mEdit.setHintTextColor(getResources().getColor(R.color.hintColor));
+                mEdit.setHint("Change Task Name");
+
+                //change text of the title to task name
+                TextView header = dialogView.findViewById(R.id.editTitle);
+                header.setText(items.get(position).taskName);
+
+                //create dialog
+                final AlertDialog alertDialog = dialogBuilder.create();
+
+                final boolean[] intentToChangeName = {false};
+
+                //listen for touch on EditText to change the font size,
+                //  make cursor visible
+                mEdit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mEdit.setTextSize(20);
+                        mEdit.setHint("New Task Name");
+                        mEdit.setCursorVisible(true);
+                        intentToChangeName[0] = true;
+                    }
+                });
+
+                //handle "add" button click
+                save.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        //the user clicked the editText, assume name was changed
+                        if (intentToChangeName[0]) {
+
+                            //check to see if new name was left empty
+                            if (mEdit.getText().toString().equals("")) {
+
+                                //name was left empty, show alert
+                                Toast.makeText(getBaseContext(), "Task Needs a New Name", Toast.LENGTH_LONG).show();
+                            }
+                            else {
+                                items.get(position).taskName = mEdit.getText().toString();
+                            }
+                        }
+
+                        alertDialog.cancel();
+                    }
+                });
+
+                changeDate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dateChange = true;
+                        currentTask = items.get(position);
+                        MainActivity.this.showDialog(MainActivity.DILOG_ID);
+                        //alertDialog.cancel();
+                    }
+                });
+
+                alertDialog.show();
             }
         });
     }
 
     //create dialog for date picker
     protected Dialog onCreateDialog(int id) {
-        if (id != DILOG_ID) {
+        if (id != DILOG_ID)
             return null;
-        }
+
         return new DatePickerDialog(this, this.myDatePickerListener, this.c.get(Calendar.YEAR), this.c.get(Calendar.MONTH), this.c.get(Calendar.DAY_OF_MONTH));
     }
 
@@ -262,23 +331,43 @@ public class MainActivity extends AppCompatActivity {
     //add item to the database, refresh calendar view
     public void onAddItem() {
 
+        boolean newItem = true;
+
         SQLiteDatabase db = this.mHelper.getWritableDatabase();
 
         //create task to be added
         TaskItem toAdd = new TaskItem(this.yearX, this.monthX, this.dayX, this.tempTaskName);
 
+        if (toAdd.taskName == null){
+            toAdd.taskName = "";
+        }
+
+        for (TaskItem item: items) {
+
+            if (equalTasks(toAdd, item)) {
+                item.dueYear = this.yearX;
+                item.dueMonth = this.monthX;
+                item.dueDay = this.dayX;
+                newItem = false;
+            }
+            break;
+        }
+
         //reset tempTaskName to avoid garbage values
         this.tempTaskName = "";
 
-        ContentValues values = new ContentValues();
-        values.put(TaskContract.TaskEntry.COL_TASK_TITLE, toAdd.taskName);
-        values.put(TaskContract.TaskEntry.COL_DAY_TITLE, Integer.valueOf(toAdd.dueDay));
-        values.put("month", Integer.valueOf(toAdd.dueMonth));
-        values.put("year", Integer.valueOf(toAdd.dueYear));
-        db.insert(TaskContract.TaskEntry.TABLE, null, values);
-        db.close();
+        if (newItem) {
 
-        this.itemsAdapter.add(toAdd);
+            ContentValues values = new ContentValues();
+            values.put(TaskContract.TaskEntry.COL_TASK_TITLE, toAdd.taskName);
+            values.put(TaskContract.TaskEntry.COL_DAY_TITLE, Integer.valueOf(toAdd.dueDay));
+            values.put("month", Integer.valueOf(toAdd.dueMonth));
+            values.put("year", Integer.valueOf(toAdd.dueYear));
+            db.insert(TaskContract.TaskEntry.TABLE, null, values);
+            db.close();
+
+            this.itemsAdapter.add(toAdd);
+        }
 
         //refresh calendar to add event to day
         events.add(toAdd.getDate());
@@ -330,6 +419,61 @@ public class MainActivity extends AppCompatActivity {
         }
 
         orderTasks();
+    }
+
+    private void changeDate() {
+
+        events.remove(currentTask.getDate());
+        //get database
+        SQLiteDatabase db = MainActivity.this.mHelper.getWritableDatabase();
+        //remove item from database
+        db.delete(TaskContract.TaskEntry.TABLE, "title = ?", new String[]{((TaskItem) currentTask).taskName});
+        db.close();
+        //remove item from list adapter
+        MainActivity.this.items.remove(currentTask);
+
+        currentTask.dueDay = dayX;
+        currentTask.dueMonth = monthX;
+        currentTask.dueYear = yearX;
+
+        Toast.makeText(this, currentTask.getDate().toString(), Toast.LENGTH_SHORT).show();
+
+        events.add(currentTask.getDate());
+        cv.setEvents(events);
+
+        itemsAdapter.add(currentTask);
+
+        orderTasks();
+    }
+
+    private void removeTask(TaskItem task) {
+
+        //get database
+        SQLiteDatabase db = MainActivity.this.mHelper.getWritableDatabase();
+        //remove item from database
+        db.delete(TaskContract.TaskEntry.TABLE, "title = ?", new String[]{(task).taskName});
+        db.close();
+        //remove item from list adapter
+        MainActivity.this.items.remove(task);
+
+        //remove item from calendar
+        events.clear();
+        for (TaskItem task : items) {
+            events.add(task.getDate());
+        }
+        cv.setEvents(events);
+
+        MainActivity.this.itemsAdapter.notifyDataSetChanged();
+    }
+
+    public boolean equalTasks(TaskItem t1, TaskItem t2) {
+
+        boolean result = false;
+        if (t1.taskName.equals(t2.taskName) && t1.dueDay == t2.dueDay && t1.dueMonth == t2.dueMonth && t1.dueYear == t2.dueYear) {
+            result = true;
+        }
+
+        return result;
     }
 
     //compares two tasks and returns an int based on their due date
