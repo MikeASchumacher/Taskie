@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:weightSum="1"
+    tools:context=".MainActivity">
+
+    <com.mikeaschumacher.tasky.CalendarView xmlns:calendarNS="http://schemas.android.com/apk/res/com.mikeaschumacher.tasky"
+        android:id="@+id/calendar_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        calendarNS:dateFormat="MMMM yyyy"
+        android:layout_above="@id/lvItems"
+        android:focusableInTouchMode="true" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/lvItems"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="top"
+            android:background="#FFF"
+            android:divider="#CFD8DC"
+            android:dividerHeight="1dp"
+            android:minHeight="?android:attr/listPreferredItemHeight" />
+
+        <ImageView
+            android:id="@+id/add"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/add_button"
+            android:gravity="right"
+            android:onClick="onDateClick" />
+
+    </RelativeLayout>
+
+</LinearLayout>

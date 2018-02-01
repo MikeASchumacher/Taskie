@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#90A4AE</color>
+    <color name="today">#4b82ff</color>
+    <color name="greyed_out">#c7c7c7</color>
+    <color name="summer">#EF5350</color>
+    <color name="fall">#FF7043</color>
+    <color name="winter">#5C6BC0</color>
+    <color name="spring">#66BB6A</color>
+    <color name="taskDay">#E53935</color>
+</resources>
