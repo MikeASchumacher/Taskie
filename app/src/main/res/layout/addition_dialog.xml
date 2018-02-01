@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="fill_parent"
-    android:background="@color/greyed_out"
+    android:background="#424242"
     android:orientation="vertical">
 
     <TextView
@@ -13,7 +13,7 @@
         android:layout_gravity="center"
         android:layout_margin="10dp"
         android:text="Add a New Task"
-        android:textColor="#FFF"
+        android:textColor="#EEEEEE"
         android:textSize="25dp"
         android:textStyle="bold"/>
 
@@ -23,7 +23,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:hint="Enter Your Task Name"
-        android:textColor="#FFF"
+        android:backgroundTint="@color/hintColor"
+        android:cursorVisible="false"
+        android:textColor="#EEEEEE"
         android:layout_margin="10dp"
         android:textSize="20dp"
         android:textAlignment="center"/>
@@ -32,14 +34,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@color/greyed_out"
+        android:background="#424242"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/colorBtn"
             android:layout_width="80dp"
             android:layout_height="30dp"
-            android:background="#FFF"
+            android:background="@android:color/transparent"
+            android:textColor="#EEEEEE"
             android:clickable="true"
             android:text="Color"
             android:textAlignment="center"
@@ -52,7 +55,8 @@
             android:id="@+id/cancelBtn"
             android:layout_width="80dp"
             android:layout_height="30dp"
-            android:background="#FFF"
+            android:background="@android:color/transparent"
+            android:textColor="#EEEEEE"
             android:clickable="true"
             android:text="Cancel"
             android:textAlignment="center"
@@ -65,7 +69,8 @@
             android:id="@+id/addBtn"
             android:layout_width="80dp"
             android:layout_height="30dp"
-            android:background="#FFF"
+            android:background="@android:color/transparent"
+            android:textColor="#EEEEEE"
             android:clickable="true"
             android:text="Add"
             android:onClick="addClicked"
