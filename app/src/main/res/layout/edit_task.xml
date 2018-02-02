@@ -38,20 +38,6 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/editCancel"
-            android:layout_width="80dp"
-            android:layout_height="30dp"
-            android:background="@android:color/transparent"
-            android:textColor="#EEEEEE"
-            android:clickable="true"
-            android:text="Cancel"
-            android:textAlignment="center"
-            android:textSize="15dp"
-            android:onClick=""
-            android:layout_margin="10dp"
-            android:textAllCaps="false"/>
-
-        <Button
             android:id="@+id/editColor"
             android:layout_width="80dp"
             android:layout_height="30dp"

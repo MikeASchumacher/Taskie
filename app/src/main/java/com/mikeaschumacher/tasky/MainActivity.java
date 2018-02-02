@@ -28,6 +28,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     //Related to SQLite database
     private TaskDbHelper mHelper;
     private String tempTaskName;
+    private Color tempTaskColor =
 
     //used for changing the hint of the EditText in the "add" dialog
     String hints[] = new String[]{
@@ -117,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.onAddItem();
             else
                 changeDate();
+            //reset dateChange checker
             dateChange = false;
         }
     };
@@ -183,8 +187,7 @@ public class MainActivity extends AppCompatActivity {
         //listen for touch and hold to remove item from list
         this.lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> adapterView, View item, int pos, long id) {
-
-
+                removeTask(items.get(pos));
                 return true;
             }
         });
@@ -222,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         mEdit.setTextSize(20);
+                        mEdit.setSingleLine();
                         mEdit.setHint("New Task Name");
                         mEdit.setCursorVisible(true);
                         intentToChangeName[0] = true;
@@ -287,6 +291,8 @@ public class MainActivity extends AppCompatActivity {
 
         //create button to listen for click
         Button add = dialogView.findViewById(R.id.addBtn);
+        Button color = dialogView.findViewById(R.id.colorBtn);
+        Button cancel = dialogView.findViewById(R.id.cancelBtn);
 
         //create EditText to modify hint, get user input
         final EditText mEdit = dialogView.findViewById(R.id.alertEntry);
@@ -311,6 +317,7 @@ public class MainActivity extends AppCompatActivity {
 
         //handle "add" button click
         add.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 tempTaskName = mEdit.getText().toString();
@@ -325,49 +332,59 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        color.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //creating dialog
+                final View dialogView = inflater.inflate(R.layout.pick_color, null);
+                dialogBuilder.setView(dialogView);
+                AlertDialog colorDialog = dialogBuilder.create();
+
+                ImageView colorOne = findViewById(R.id.circle_one);
+                ImageView colorTwo = findViewById(R.id.circle_two);
+                ImageView colorThree = findViewById(R.id.circle_three);
+                ImageView colorFour = findViewById(R.id.circle_four);
+                ImageView colorFive = findViewById(R.id.circle_five);
+                ImageView colorSix = findViewById(R.id.circle_six);
+                ImageView colorSeven = findViewById(R.id.circle_seven);
+                ImageView colorEight = findViewById(R.id.circle_eight);
+
+
+                dialogBuilder.show();
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.cancel();
+            }
+        });
+
         alertDialog.show();
     }
 
     //add item to the database, refresh calendar view
     public void onAddItem() {
 
-        boolean newItem = true;
-
         SQLiteDatabase db = this.mHelper.getWritableDatabase();
 
         //create task to be added
         TaskItem toAdd = new TaskItem(this.yearX, this.monthX, this.dayX, this.tempTaskName);
 
-        if (toAdd.taskName == null){
-            toAdd.taskName = "";
-        }
-
-        for (TaskItem item: items) {
-
-            if (equalTasks(toAdd, item)) {
-                item.dueYear = this.yearX;
-                item.dueMonth = this.monthX;
-                item.dueDay = this.dayX;
-                newItem = false;
-            }
-            break;
-        }
+        ContentValues values = new ContentValues();
+        values.put(TaskContract.TaskEntry.COL_TASK_TITLE, toAdd.taskName);
+        values.put(TaskContract.TaskEntry.COL_DAY_TITLE, Integer.valueOf(toAdd.dueDay));
+        values.put("month", Integer.valueOf(toAdd.dueMonth));
+        values.put("year", Integer.valueOf(toAdd.dueYear));
+        db.insert(TaskContract.TaskEntry.TABLE, null, values);
+        db.close();
 
         //reset tempTaskName to avoid garbage values
         this.tempTaskName = "";
 
-        if (newItem) {
-
-            ContentValues values = new ContentValues();
-            values.put(TaskContract.TaskEntry.COL_TASK_TITLE, toAdd.taskName);
-            values.put(TaskContract.TaskEntry.COL_DAY_TITLE, Integer.valueOf(toAdd.dueDay));
-            values.put("month", Integer.valueOf(toAdd.dueMonth));
-            values.put("year", Integer.valueOf(toAdd.dueYear));
-            db.insert(TaskContract.TaskEntry.TABLE, null, values);
-            db.close();
-
-            this.itemsAdapter.add(toAdd);
-        }
+        this.itemsAdapter.add(toAdd);
 
         //refresh calendar to add event to day
         events.add(toAdd.getDate());
@@ -423,27 +440,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void changeDate() {
 
-        events.remove(currentTask.getDate());
-        //get database
-        SQLiteDatabase db = MainActivity.this.mHelper.getWritableDatabase();
-        //remove item from database
-        db.delete(TaskContract.TaskEntry.TABLE, "title = ?", new String[]{((TaskItem) currentTask).taskName});
-        db.close();
-        //remove item from list adapter
-        MainActivity.this.items.remove(currentTask);
+        removeTask(currentTask);
 
-        currentTask.dueDay = dayX;
-        currentTask.dueMonth = monthX;
-        currentTask.dueYear = yearX;
+        tempTaskName = currentTask.taskName;
 
-        Toast.makeText(this, currentTask.getDate().toString(), Toast.LENGTH_SHORT).show();
-
-        events.add(currentTask.getDate());
-        cv.setEvents(events);
-
-        itemsAdapter.add(currentTask);
-
-        orderTasks();
+        onAddItem();
     }
 
     private void removeTask(TaskItem task) {
@@ -458,22 +459,12 @@ public class MainActivity extends AppCompatActivity {
 
         //remove item from calendar
         events.clear();
-        for (TaskItem task : items) {
-            events.add(task.getDate());
+        for (TaskItem currentTask : items) {
+            events.add(currentTask.getDate());
         }
         cv.setEvents(events);
 
         MainActivity.this.itemsAdapter.notifyDataSetChanged();
-    }
-
-    public boolean equalTasks(TaskItem t1, TaskItem t2) {
-
-        boolean result = false;
-        if (t1.taskName.equals(t2.taskName) && t1.dueDay == t2.dueDay && t1.dueMonth == t2.dueMonth && t1.dueYear == t2.dueYear) {
-            result = true;
-        }
-
-        return result;
     }
 
     //compares two tasks and returns an int based on their due date
