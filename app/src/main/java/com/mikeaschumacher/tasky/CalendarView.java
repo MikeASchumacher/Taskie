@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -62,7 +63,7 @@ public class CalendarView extends LinearLayout {
     int differenceFromToday = 0;
 
     //track events
-    HashSet<Date> events;
+    HashMap<Date, Integer> events;
 
     // internal components
     private LinearLayout header;
@@ -181,11 +182,7 @@ public class CalendarView extends LinearLayout {
         });
     }
 
-    public void changeColor(Color color) {
-
-    }
-
-    public void setEvents(HashSet<Date> eventsIn){
+    public void setEvents(HashMap<Date, Integer> eventsIn){
         this.events = eventsIn;
         updateCalendar(events);
     }
@@ -197,11 +194,9 @@ public class CalendarView extends LinearLayout {
     /**
      * Display dates correctly in grid
      */
-    public void updateCalendar(HashSet<Date> events) {
+    public void updateCalendar(HashMap<Date, Integer> events) {
         ArrayList<Date> cells = new ArrayList<>();
         Calendar calendar = (Calendar) currentDate.clone();
-
-        //Toast.makeText(getContext(), events.toString(), Toast.LENGTH_LONG).show();
 
         // determine the cell for current month's beginning
         calendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -236,12 +231,12 @@ public class CalendarView extends LinearLayout {
     private class CalendarAdapter extends ArrayAdapter<Date> {
 
         // days with events
-        private HashSet<Date> eventDays;
+        private HashMap<Date, Integer> eventDays;
 
         // for view inflation
         private LayoutInflater inflater;
 
-        public CalendarAdapter(Context context, ArrayList<Date> days, HashSet<Date> eventDays) {
+        public CalendarAdapter(Context context, ArrayList<Date> days, HashMap<Date, Integer> eventDays) {
             super(context, R.layout.calendar_day, days);
             this.eventDays = eventDays;
             inflater = LayoutInflater.from(context);
@@ -280,15 +275,21 @@ public class CalendarView extends LinearLayout {
                 dayText.setTextColor(getResources().getColor(color));
             }
 
+
             // if this day has an event, specify event image
             if (eventDays != null) {
-                for (Date eventDate : eventDays) {
+                for (Date eventDate : eventDays.keySet()) {
                     if (eventDate.getDate() == day &&
                             eventDate.getMonth() == month &&
                             eventDate.getYear() == year) {
                         // mark this day for event
-                        dayText.setTextColor(getResources().getColor(R.color.taskDay));
-                        break;
+                        if (dayText.getCurrentTextColor() != Color.BLACK)
+                            Toast.makeText(getContext(), "multiple colors", Toast.LENGTH_LONG).show();
+
+                        if (eventDays != null && eventDays.get(eventDate) != null) {
+                            dayText.setTextColor(eventDays.get(eventDate));
+                            break;
+                        }
                     }
                 }
             }

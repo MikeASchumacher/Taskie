@@ -10,7 +10,7 @@ public class TaskDbHelper extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE tasks(_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, day INTEGER, month INTEGER, year INTEGER);");
+        db.execSQL("CREATE TABLE tasks(_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, day INTEGER, month INTEGER, year INTEGER, color INTEGER);");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

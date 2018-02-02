@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
@@ -70,12 +72,12 @@ public class MainActivity extends AppCompatActivity {
 
     //resources for creating and modifying custom calendar
     CalendarView cv;
-    HashSet<Date> events = new HashSet<>();
+    HashMap<Date, Integer> events = new HashMap<>();
 
     //Related to SQLite database
     private TaskDbHelper mHelper;
     private String tempTaskName;
-    private Color tempTaskColor =
+    private int tempTaskColor;
 
     //used for changing the hint of the EditText in the "add" dialog
     String hints[] = new String[]{
@@ -167,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         setupListViewListener();
 
         cv = ((CalendarView) findViewById(R.id.calendar_view));
-        cv.setEvents(events);
+        cv.updateCalendar(events);
 
         // assign event handler
         cv.setEventHandler(new CalendarView.EventHandler() {
@@ -175,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
             public void onDayLongPress(Date date) {
                 // show returned day
                 DateFormat df = SimpleDateFormat.getDateInstance();
-                Toast.makeText(MainActivity.this, df.format(date), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -281,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
     //open "addition_dialog" to get info from user
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
-    public void onDateClick(View v) throws InterruptedException {
+    public void onDateClick(final View v) throws InterruptedException {
 
         //creating dialog
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
@@ -292,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
         //create button to listen for click
         Button add = dialogView.findViewById(R.id.addBtn);
         Button color = dialogView.findViewById(R.id.colorBtn);
-        Button cancel = dialogView.findViewById(R.id.cancelBtn);
+        final Button cancel = dialogView.findViewById(R.id.cancelBtn);
 
         //create EditText to modify hint, get user input
         final EditText mEdit = dialogView.findViewById(R.id.alertEntry);
@@ -332,24 +333,72 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //handle the click on "color" button on add dialog
         color.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+
                 //creating dialog
-                final View dialogView = inflater.inflate(R.layout.pick_color, null);
-                dialogBuilder.setView(dialogView);
-                AlertDialog colorDialog = dialogBuilder.create();
+                final View dialogViewTwo = inflater.inflate(R.layout.pick_color, null);
+                dialogBuilder.setView(dialogViewTwo);
 
-                ImageView colorOne = findViewById(R.id.circle_one);
-                ImageView colorTwo = findViewById(R.id.circle_two);
-                ImageView colorThree = findViewById(R.id.circle_three);
-                ImageView colorFour = findViewById(R.id.circle_four);
-                ImageView colorFive = findViewById(R.id.circle_five);
-                ImageView colorSix = findViewById(R.id.circle_six);
-                ImageView colorSeven = findViewById(R.id.circle_seven);
-                ImageView colorEight = findViewById(R.id.circle_eight);
+                //assign all color options to buttons
+                Button colorOne = dialogViewTwo.findViewById(R.id.circle_one);
+                ImageView colorTwo = dialogViewTwo.findViewById(R.id.circle_two);
+                ImageView colorThree = dialogViewTwo.findViewById(R.id.circle_three);
+                ImageView colorFour = dialogViewTwo.findViewById(R.id.circle_four);
+                ImageView colorFive = dialogViewTwo.findViewById(R.id.circle_five);
+                ImageView colorSix = dialogViewTwo.findViewById(R.id.circle_six);
+                ImageView colorSeven = dialogViewTwo.findViewById(R.id.circle_seven);
+                ImageView colorEight = dialogViewTwo.findViewById(R.id.circle_eight);
 
+                final AlertDialog colorDialog = dialogBuilder.create();
+
+
+                /*v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        //change to switch?
+                        if (view.getId() == R.id.circle_one) {
+                            tempTaskColor = getResources().getColor(R.color.optOne);
+                            Toast.makeText(getBaseContext(), "click", Toast.LENGTH_LONG).show();
+                        }
+                        if (view.getId() == R.id.circle_two)
+                            tempTaskColor = getResources().getColor(R.color.optTwo);
+                        if (view.getId() == R.id.circle_three)
+                            tempTaskColor = getResources().getColor(R.color.optThree);
+                        if (view.getId() == R.id.circle_four)
+                            tempTaskColor = getResources().getColor(R.color.optFour);
+                        if (view.getId() == R.id.circle_five)
+                            tempTaskColor = getResources().getColor(R.color.optFive);
+                        if (view.getId() == R.id.circle_six)
+                            tempTaskColor = getResources().getColor(R.color.optSix);
+                        if (view.getId() == R.id.circle_seven)
+                            tempTaskColor = getResources().getColor(R.color.optSeven);
+                        if (view.getId() == R.id.circle_eight)
+                            tempTaskColor = getResources().getColor(R.color.optEight);
+
+                        colorDialog.cancel();
+                    }
+                });*/
+
+                //set on click listeners for each color option
+                colorOne.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        colorDialog.cancel();
+                    }
+                });
+
+                colorTwo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        tempTaskColor = getResources().getColor(R.color.optTwo);
+                        colorDialog.cancel();
+                    }
+                });
 
                 dialogBuilder.show();
             }
@@ -371,13 +420,14 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabase db = this.mHelper.getWritableDatabase();
 
         //create task to be added
-        TaskItem toAdd = new TaskItem(this.yearX, this.monthX, this.dayX, this.tempTaskName);
+        TaskItem toAdd = new TaskItem(this.yearX, this.monthX, this.dayX, this.tempTaskName, tempTaskColor);
 
         ContentValues values = new ContentValues();
         values.put(TaskContract.TaskEntry.COL_TASK_TITLE, toAdd.taskName);
         values.put(TaskContract.TaskEntry.COL_DAY_TITLE, Integer.valueOf(toAdd.dueDay));
         values.put("month", Integer.valueOf(toAdd.dueMonth));
         values.put("year", Integer.valueOf(toAdd.dueYear));
+        values.put("color", Integer.valueOf(toAdd.color));
         db.insert(TaskContract.TaskEntry.TABLE, null, values);
         db.close();
 
@@ -387,8 +437,8 @@ public class MainActivity extends AppCompatActivity {
         this.itemsAdapter.add(toAdd);
 
         //refresh calendar to add event to day
-        events.add(toAdd.getDate());
-        cv.setEvents(events);
+        events.put(toAdd.getDate(), toAdd.color);
+        cv.updateCalendar(events);
 
         //reorder the items on the listview
         orderTasks();
@@ -425,14 +475,14 @@ public class MainActivity extends AppCompatActivity {
     private void readItems() {
 
         this.items = new ArrayList();
-        Cursor curseYou = this.mHelper.getReadableDatabase().query(TaskContract.TaskEntry.TABLE, new String[]{TaskContract.TaskEntry.COL_TASK_TITLE, TaskContract.TaskEntry.COL_DAY_TITLE, "month", "year"}, null, null, null, null, null);
+        Cursor curseYou = this.mHelper.getReadableDatabase().query(TaskContract.TaskEntry.TABLE, new String[]{TaskContract.TaskEntry.COL_TASK_TITLE, TaskContract.TaskEntry.COL_DAY_TITLE, "month", "year", "color"}, null, null, null, null, null);
         while (curseYou.moveToNext()) {
-            TaskItem toAdd = new TaskItem(curseYou.getInt(3), curseYou.getInt(2), curseYou.getInt(1), curseYou.getString(0));
+            TaskItem toAdd = new TaskItem(curseYou.getInt(3), curseYou.getInt(2), curseYou.getInt(1), curseYou.getString(0), curseYou.getInt(4));
             this.items.add(toAdd);
         }
 
         for (TaskItem task : items) {
-            events.add(task.getDate());
+            events.put(task.getDate(), task.color);
         }
 
         orderTasks();
@@ -460,9 +510,9 @@ public class MainActivity extends AppCompatActivity {
         //remove item from calendar
         events.clear();
         for (TaskItem currentTask : items) {
-            events.add(currentTask.getDate());
+            events.put(currentTask.getDate(), currentTask.color);
         }
-        cv.setEvents(events);
+        cv.updateCalendar(events);
 
         MainActivity.this.itemsAdapter.notifyDataSetChanged();
     }

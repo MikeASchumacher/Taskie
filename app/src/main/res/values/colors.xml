@@ -12,4 +12,13 @@
     <color name="taskDay">#E53935</color>
     <color name="textColor">#EEEEEE</color>
     <color name="hintColor">#B3B3B3</color>
+
+    <color name="optOne">#E53935</color>
+    <color name="optTwo">#D81B60</color>
+    <color name="optThree">#8E24AA</color>
+    <color name="optFour">#1E88E5</color>
+    <color name="optFive">#009688</color>
+    <color name="optSix">#FBC02D</color>
+    <color name="optSeven">#FF9800</color>
+    <color name="optEight">#B71C1C</color>
 </resources>

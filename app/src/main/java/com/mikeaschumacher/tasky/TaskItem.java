@@ -15,14 +15,16 @@ public class TaskItem {
     public int dueYear;
     public Date taskDateCreation;
     public String taskName;
+    int color;
 
-    public TaskItem(int yearIn, int monthIn, int dayIn, String name) {
+    public TaskItem(int yearIn, int monthIn, int dayIn, String name, int color) {
         this.taskName = name;
         this.dueYear = yearIn;
         this.dueMonth = monthIn;
         this.dueDay = dayIn;
         this.taskName = name;
         this.taskDateCreation = new GregorianCalendar(yearIn, monthIn - 1, dayIn).getTime();
+        this.color = color;
     }
 
     public Date getDate() {
