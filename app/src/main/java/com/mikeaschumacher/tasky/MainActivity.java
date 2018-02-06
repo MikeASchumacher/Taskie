@@ -279,6 +279,10 @@ public class MainActivity extends AppCompatActivity {
         return new DatePickerDialog(this, this.myDatePickerListener, this.c.get(Calendar.YEAR), this.c.get(Calendar.MONTH), this.c.get(Calendar.DAY_OF_MONTH));
     }
 
+    public void clickTest(View v){
+        Toast.makeText(this, "click", Toast.LENGTH_LONG).show();
+    }
+
     //open "addition_dialog" to get info from user
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
@@ -356,35 +360,57 @@ public class MainActivity extends AppCompatActivity {
                 final AlertDialog colorDialog = dialogBuilder.create();
 
 
-                /*v.setOnClickListener(new View.OnClickListener() {
+                v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
-                        //change to switch?
-                        if (view.getId() == R.id.circle_one) {
-                            tempTaskColor = getResources().getColor(R.color.optOne);
-                            Toast.makeText(getBaseContext(), "click", Toast.LENGTH_LONG).show();
+                        switch (view.getId()) {
+
+                            case R.id.circle_one:
+                                tempTaskColor = getResources().getColor(R.color.optOne);
+                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                                colorDialog.cancel();
+                                break;
+                            case R.id.circle_two:
+                                tempTaskColor = getResources().getColor(R.color.optTwo);
+                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                                colorDialog.cancel();
+                                break;
+                            case R.id.circle_three:
+                                tempTaskColor = getResources().getColor(R.color.optThree);
+                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                                colorDialog.cancel();
+                                break;
+                            case R.id.circle_four:
+                                tempTaskColor = getResources().getColor(R.color.optFour);
+                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                                colorDialog.cancel();
+                                break;
+                            case R.id.circle_five:
+                                tempTaskColor = getResources().getColor(R.color.optFive);
+                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                                colorDialog.cancel();
+                                break;
+                            case R.id.circle_six:
+                                tempTaskColor = getResources().getColor(R.color.optSix);
+                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                                colorDialog.cancel();
+                                break;
+                            case R.id.circle_seven:
+                                tempTaskColor = getResources().getColor(R.color.optSeven);
+                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                                colorDialog.cancel();
+                                break;
+                            case R.id.circle_eight:
+                                tempTaskColor = getResources().getColor(R.color.optEight);
+                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                                colorDialog.cancel();
+                                break;
                         }
-                        if (view.getId() == R.id.circle_two)
-                            tempTaskColor = getResources().getColor(R.color.optTwo);
-                        if (view.getId() == R.id.circle_three)
-                            tempTaskColor = getResources().getColor(R.color.optThree);
-                        if (view.getId() == R.id.circle_four)
-                            tempTaskColor = getResources().getColor(R.color.optFour);
-                        if (view.getId() == R.id.circle_five)
-                            tempTaskColor = getResources().getColor(R.color.optFive);
-                        if (view.getId() == R.id.circle_six)
-                            tempTaskColor = getResources().getColor(R.color.optSix);
-                        if (view.getId() == R.id.circle_seven)
-                            tempTaskColor = getResources().getColor(R.color.optSeven);
-                        if (view.getId() == R.id.circle_eight)
-                            tempTaskColor = getResources().getColor(R.color.optEight);
-
-                        colorDialog.cancel();
                     }
-                });*/
+                });
 
-                //set on click listeners for each color option
+                /*//set on click listeners for each color option
                 colorOne.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -398,9 +424,9 @@ public class MainActivity extends AppCompatActivity {
                         tempTaskColor = getResources().getColor(R.color.optTwo);
                         colorDialog.cancel();
                     }
-                });
+                });*/
 
-                dialogBuilder.show();
+                colorDialog.show();
             }
         });
 

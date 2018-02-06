@@ -33,7 +33,7 @@
             android:layout_height="50dp"
             android:background="@drawable/circle_one"
             android:clickable="true"
-            android:onClick=""
+            android:onClick="clickTest"
             android:layout_margin="10dp"
             android:textAllCaps="false"/>
 
