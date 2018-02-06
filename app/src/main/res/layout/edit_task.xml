@@ -47,7 +47,6 @@
             android:text="Color"
             android:textAlignment="center"
             android:textSize="15dp"
-            android:onClick=""
             android:layout_margin="10dp"
             android:textAllCaps="false"/>
 
@@ -61,7 +60,6 @@
             android:text="Due Date"
             android:textAlignment="center"
             android:textSize="15dp"
-            android:onClick=""
             android:layout_margin="10dp"
             android:textAllCaps="false"/>
 

@@ -287,7 +287,7 @@ public class CalendarView extends LinearLayout {
                             Toast.makeText(getContext(), "multiple colors", Toast.LENGTH_LONG).show();
 
                         if (eventDays != null && eventDays.get(eventDate) != null) {
-                            dayText.setTextColor(getResources().getColor(R.color.taskDay));
+                            dayText.setTextColor(eventDays.get(eventDate));
                             break;
                         }
                     }

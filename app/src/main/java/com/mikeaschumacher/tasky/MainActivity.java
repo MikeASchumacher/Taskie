@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
     LayoutInflater inflater;
 
-    boolean dateChange = false;
+    boolean dateChange = false, colorChange = false;
 
     TaskItem currentTask;
 
@@ -205,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
                 //create button to listen for click
                 Button save = dialogView.findViewById(R.id.save);
                 final Button changeDate = dialogView.findViewById(R.id.editDate);
+                Button color = dialogView.findViewById(R.id.editColor);
 
                 //create EditText to modify hint, get user input
                 final EditText mEdit = dialogView.findViewById(R.id.editEntry);
@@ -246,8 +247,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 //name was left empty, show alert
                                 Toast.makeText(getBaseContext(), "Task Needs a New Name", Toast.LENGTH_LONG).show();
-                            }
-                            else {
+                            } else {
                                 items.get(position).taskName = mEdit.getText().toString();
                             }
                         }
@@ -262,9 +262,21 @@ public class MainActivity extends AppCompatActivity {
                         dateChange = true;
                         currentTask = items.get(position);
                         MainActivity.this.showDialog(MainActivity.DILOG_ID);
-                        //alertDialog.cancel();
+                        orderTasks();
                     }
                 });
+
+                color.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                    @Override
+                    public void onClick(View v) {
+                        colorChange = true;
+                        currentTask = items.get(position);
+                        onColorClick(v);
+                    }
+                });
+
+
 
                 alertDialog.show();
             }
@@ -277,10 +289,6 @@ public class MainActivity extends AppCompatActivity {
             return null;
 
         return new DatePickerDialog(this, this.myDatePickerListener, this.c.get(Calendar.YEAR), this.c.get(Calendar.MONTH), this.c.get(Calendar.DAY_OF_MONTH));
-    }
-
-    public void clickTest(View v){
-        Toast.makeText(this, "click", Toast.LENGTH_LONG).show();
     }
 
     //open "addition_dialog" to get info from user
@@ -301,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
 
         //create EditText to modify hint, get user input
         final EditText mEdit = dialogView.findViewById(R.id.alertEntry);
+
         mEdit.setHintTextColor(getResources().getColor(R.color.hintColor));
         Random r = new Random();
         mEdit.setHint(hints[r.nextInt(hints.length)]);
@@ -329,8 +338,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!tempTaskName.equals("")) {
                     MainActivity.this.showDialog(MainActivity.DILOG_ID);
                     alertDialog.cancel();
-                }
-                else {
+                } else {
                     Toast.makeText(getBaseContext(), "Task Needs a Name", Toast.LENGTH_LONG).show();
                 }
 
@@ -340,10 +348,15 @@ public class MainActivity extends AppCompatActivity {
         //handle the click on "color" button on add dialog
         color.setOnClickListener(new View.OnClickListener() {
 
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
 
-                //creating dialog
+                tempTaskName = mEdit.getText().toString();
+
+                onColorClick(v);
+
+                /*//creating dialog
                 final View dialogViewTwo = inflater.inflate(R.layout.pick_color, null);
                 dialogBuilder.setView(dialogViewTwo);
 
@@ -408,25 +421,9 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                         }
                     }
-                });
-
-                /*//set on click listeners for each color option
-                colorOne.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        colorDialog.cancel();
-                    }
-                });
-
-                colorTwo.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        tempTaskColor = getResources().getColor(R.color.optTwo);
-                        colorDialog.cancel();
-                    }
                 });*/
 
-                colorDialog.show();
+                //colorDialog.show();
             }
         });
 
@@ -438,6 +435,200 @@ public class MainActivity extends AppCompatActivity {
         });
 
         alertDialog.show();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void onColorClick(View v) {
+
+        //create dialog
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.pick_color, null);
+        dialogBuilder.setView(dialogView);
+
+        //assign all color options to buttons
+        Button colorOne = dialogView.findViewById(R.id.circle_one);
+        ImageView colorTwo = dialogView.findViewById(R.id.circle_two);
+        ImageView colorThree = dialogView.findViewById(R.id.circle_three);
+        ImageView colorFour = dialogView.findViewById(R.id.circle_four);
+        ImageView colorFive = dialogView.findViewById(R.id.circle_five);
+        ImageView colorSix = dialogView.findViewById(R.id.circle_six);
+        ImageView colorSeven = dialogView.findViewById(R.id.circle_seven);
+        ImageView colorEight = dialogView.findViewById(R.id.circle_eight);
+
+        final AlertDialog alertDialog = dialogBuilder.create();
+
+        colorOne.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tempTaskColor = getResources().getColor(R.color.optOne);
+                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                if (colorChange) {
+                    dayX = currentTask.dueDay;
+                    monthX = currentTask.dueMonth;
+                    yearX = currentTask.dueYear;
+                    changeDate();
+                }
+                alertDialog.cancel();
+            }
+        });
+
+        colorTwo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tempTaskColor = getResources().getColor(R.color.optTwo);
+                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                if (colorChange) {
+                    dayX = currentTask.dueDay;
+                    monthX = currentTask.dueMonth;
+                    yearX = currentTask.dueYear;
+                    changeDate();
+                }
+                alertDialog.cancel();
+            }
+        });
+
+        colorThree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tempTaskColor = getResources().getColor(R.color.optThree);
+                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                if (colorChange) {
+                    dayX = currentTask.dueDay;
+                    monthX = currentTask.dueMonth;
+                    yearX = currentTask.dueYear;
+                    changeDate();
+                }
+                alertDialog.cancel();
+            }
+        });
+
+        colorFour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tempTaskColor = getResources().getColor(R.color.optFour);
+                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                if (colorChange) {
+                    dayX = currentTask.dueDay;
+                    monthX = currentTask.dueMonth;
+                    yearX = currentTask.dueYear;
+                    changeDate();
+                }
+                alertDialog.cancel();
+            }
+        });
+
+        colorFive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tempTaskColor = getResources().getColor(R.color.optFive);
+                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                if (colorChange) {
+                    dayX = currentTask.dueDay;
+                    monthX = currentTask.dueMonth;
+                    yearX = currentTask.dueYear;
+                    changeDate();
+                }
+                alertDialog.cancel();
+            }
+        });
+
+        colorSix.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tempTaskColor = getResources().getColor(R.color.optSix);
+                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                if (colorChange) {
+                    dayX = currentTask.dueDay;
+                    monthX = currentTask.dueMonth;
+                    yearX = currentTask.dueYear;
+                    changeDate();
+                }
+                alertDialog.cancel();
+            }
+        });
+
+        colorSeven.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tempTaskColor = getResources().getColor(R.color.optSeven);
+                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                if (colorChange) {
+                    dayX = currentTask.dueDay;
+                    monthX = currentTask.dueMonth;
+                    yearX = currentTask.dueYear;
+                    changeDate();
+                }
+                alertDialog.cancel();
+            }
+        });
+
+        colorEight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tempTaskColor = getResources().getColor(R.color.optEight);
+                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                if (colorChange) {
+                    dayX = currentTask.dueDay;
+                    monthX = currentTask.dueMonth;
+                    yearX = currentTask.dueYear;
+                    changeDate();
+                }
+                alertDialog.cancel();
+            }
+        });
+
+        alertDialog.show();
+
+        /*v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                switch (view.getId()) {
+
+                    case R.id.circle_one:
+                        tempTaskColor = getResources().getColor(R.color.optOne);
+                        Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                        colorDialog.cancel();
+                        break;
+                    case R.id.circle_two:
+                        tempTaskColor = getResources().getColor(R.color.optTwo);
+                        Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                        colorDialog.cancel();
+                        break;
+                    case R.id.circle_three:
+                        tempTaskColor = getResources().getColor(R.color.optThree);
+                        Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                        colorDialog.cancel();
+                        break;
+                    case R.id.circle_four:
+                        tempTaskColor = getResources().getColor(R.color.optFour);
+                        Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                        colorDialog.cancel();
+                        break;
+                    case R.id.circle_five:
+                        tempTaskColor = getResources().getColor(R.color.optFive);
+                        Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                        colorDialog.cancel();
+                        break;
+                    case R.id.circle_six:
+                        tempTaskColor = getResources().getColor(R.color.optSix);
+                        Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                        colorDialog.cancel();
+                        break;
+                    case R.id.circle_seven:
+                        tempTaskColor = getResources().getColor(R.color.optSeven);
+                        Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                        colorDialog.cancel();
+                        break;
+                    case R.id.circle_eight:
+                        tempTaskColor = getResources().getColor(R.color.optEight);
+                        Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
+                        colorDialog.cancel();
+                        break;
+                }
+            }
+        });*/
     }
 
     //add item to the database, refresh calendar view
@@ -501,7 +692,7 @@ public class MainActivity extends AppCompatActivity {
     private void readItems() {
 
         this.items = new ArrayList();
-        Cursor curseYou = this.mHelper.getReadableDatabase().query(TaskContract.TaskEntry.TABLE, new String[]{TaskContract.TaskEntry.COL_TASK_TITLE, TaskContract.TaskEntry.COL_DAY_TITLE, "month", "year", "color"}, null, null, null, null, null);
+        Cursor curseYou = this.mHelper.getReadableDatabase().query(TaskContract.TaskEntry.TABLE, new String[]{TaskContract.TaskEntry.COL_TASK_TITLE, TaskContract.TaskEntry.COL_DAY_TITLE, TaskContract.TaskEntry.COL_MONTH_TITLE, TaskContract.TaskEntry.COL_YEAR_TITLE, TaskContract.TaskEntry.COL_COLOR_TITLE}, null, null, null, null, null);
         while (curseYou.moveToNext()) {
             TaskItem toAdd = new TaskItem(curseYou.getInt(3), curseYou.getInt(2), curseYou.getInt(1), curseYou.getString(0), curseYou.getInt(4));
             this.items.add(toAdd);

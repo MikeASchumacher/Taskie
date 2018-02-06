@@ -5,8 +5,7 @@
     android:layout_width="wrap_content"
     android:background="#4C4E51"
     android:orientation="vertical"
-    android:layout_gravity="center"
-    android:clickable="true">
+    android:layout_gravity="center">
 
     <TextView
         android:id="@+id/colorTitle"
@@ -28,18 +27,17 @@
 
         <Button
             android:id="@+id/circle_one"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/circle_one"
             android:clickable="true"
-            android:onClick="clickTest"
             android:layout_margin="10dp"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <ImageView
             android:id="@+id/circle_two"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/circle_two"
@@ -49,7 +47,7 @@
 
         <ImageView
             android:id="@+id/circle_three"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/circle_three"
@@ -59,7 +57,7 @@
 
         <ImageView
             android:id="@+id/circle_four"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/cirlce_four"
@@ -79,7 +77,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
@@ -88,12 +86,12 @@
             android:textColor="@color/optOne"
             android:textSize="12dp"
             android:textStyle="bold"
-            android:gravity="center"/>
+            android:gravity="top"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
@@ -107,7 +105,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
@@ -121,7 +119,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
@@ -142,7 +140,7 @@
 
         <ImageView
             android:id="@+id/circle_five"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/circle_five"
@@ -152,7 +150,7 @@
 
         <ImageView
             android:id="@+id/circle_six"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/circle_six"
@@ -162,7 +160,7 @@
 
         <ImageView
             android:id="@+id/circle_seven"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/circle_seven"
@@ -172,7 +170,7 @@
 
         <ImageView
             android:id="@+id/circle_eight"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/circle_eight"
