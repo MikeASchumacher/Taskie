@@ -161,7 +161,6 @@ public class CalendarView extends LinearLayout {
             public void onClick(View v) {
 
                 currentDate.add(Calendar.MONTH, +differenceFromToday);
-
                 differenceFromToday = 0;
                 updateCalendar(events);
             }
@@ -195,6 +194,8 @@ public class CalendarView extends LinearLayout {
      * Display dates correctly in grid
      */
     public void updateCalendar(HashMap<Date, Integer> events) {
+        this.events = events;
+
         ArrayList<Date> cells = new ArrayList<>();
         Calendar calendar = (Calendar) currentDate.clone();
 
