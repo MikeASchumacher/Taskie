@@ -135,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
 
         inflater = this.getLayoutInflater();
 
+        tempTaskColor = getResources().getColor(R.color.optOne);
+
         //SQLite setup
         this.mHelper = new TaskDbHelper(this);
         SQLiteDatabase db = this.mHelper.getReadableDatabase();
@@ -355,75 +357,6 @@ public class MainActivity extends AppCompatActivity {
                 tempTaskName = mEdit.getText().toString();
 
                 onColorClick(v);
-
-                /*//creating dialog
-                final View dialogViewTwo = inflater.inflate(R.layout.pick_color, null);
-                dialogBuilder.setView(dialogViewTwo);
-
-                //assign all color options to buttons
-                Button colorOne = dialogViewTwo.findViewById(R.id.circle_one);
-                ImageView colorTwo = dialogViewTwo.findViewById(R.id.circle_two);
-                ImageView colorThree = dialogViewTwo.findViewById(R.id.circle_three);
-                ImageView colorFour = dialogViewTwo.findViewById(R.id.circle_four);
-                ImageView colorFive = dialogViewTwo.findViewById(R.id.circle_five);
-                ImageView colorSix = dialogViewTwo.findViewById(R.id.circle_six);
-                ImageView colorSeven = dialogViewTwo.findViewById(R.id.circle_seven);
-                ImageView colorEight = dialogViewTwo.findViewById(R.id.circle_eight);
-
-                final AlertDialog colorDialog = dialogBuilder.create();
-
-
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        switch (view.getId()) {
-
-                            case R.id.circle_one:
-                                tempTaskColor = getResources().getColor(R.color.optOne);
-                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
-                                colorDialog.cancel();
-                                break;
-                            case R.id.circle_two:
-                                tempTaskColor = getResources().getColor(R.color.optTwo);
-                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
-                                colorDialog.cancel();
-                                break;
-                            case R.id.circle_three:
-                                tempTaskColor = getResources().getColor(R.color.optThree);
-                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
-                                colorDialog.cancel();
-                                break;
-                            case R.id.circle_four:
-                                tempTaskColor = getResources().getColor(R.color.optFour);
-                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
-                                colorDialog.cancel();
-                                break;
-                            case R.id.circle_five:
-                                tempTaskColor = getResources().getColor(R.color.optFive);
-                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
-                                colorDialog.cancel();
-                                break;
-                            case R.id.circle_six:
-                                tempTaskColor = getResources().getColor(R.color.optSix);
-                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
-                                colorDialog.cancel();
-                                break;
-                            case R.id.circle_seven:
-                                tempTaskColor = getResources().getColor(R.color.optSeven);
-                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
-                                colorDialog.cancel();
-                                break;
-                            case R.id.circle_eight:
-                                tempTaskColor = getResources().getColor(R.color.optEight);
-                                Toast.makeText(getBaseContext(), "Nice Choice!", Toast.LENGTH_LONG).show();
-                                colorDialog.cancel();
-                                break;
-                        }
-                    }
-                });*/
-
-                //colorDialog.show();
             }
         });
 
