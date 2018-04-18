@@ -232,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
                         mEdit.setSingleLine();
                         mEdit.setHint("New Task Name");
                         mEdit.setCursorVisible(true);
+                        mEdit.setText(items.get(position).taskName);
                         intentToChangeName[0] = true;
                     }
                 });

@@ -285,7 +285,7 @@ public class CalendarView extends LinearLayout {
                             eventDate.getYear() == year) {
                         // mark this day for event
                         if (dayText.getCurrentTextColor() != Color.BLACK)
-                            Toast.makeText(getContext(), "multiple colors", Toast.LENGTH_LONG).show();
+                            //checking for multiple colors
 
                         if (eventDays != null && eventDays.get(eventDate) != null) {
                             dayText.setTextColor(eventDays.get(eventDate));
